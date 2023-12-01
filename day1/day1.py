@@ -1,6 +1,6 @@
 import re
 
-lines = open('testcase').readlines(-1)
+lines = open('input').readlines(-1)
 calsum = 0
 
 for l in lines:
