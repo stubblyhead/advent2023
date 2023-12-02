@@ -1,4 +1,4 @@
-lines = open('input').readlines(-1)
+lines = open('testcase').readlines(-1)
 
 MAX_RED = 12
 MAX_GREEN = 13
@@ -25,3 +25,27 @@ for l in lines:
         valid_count += game_num
 
 print(valid_count)
+
+total_power = 0
+
+for l in lines:
+    min_red = 0
+    min_green = 0
+    min_blue = 0
+    parts = l.strip().split(': ')
+    draws = parts[1].split('; ')
+    for d in draws:
+        colors = d.split(', ')
+        for c in colors:
+            (count,color) = c.split(' ')
+            if color == 'red':
+                #minimum color needed is max of previous min and current count
+                min_red = max(min_red, int(count)) 
+            elif color == 'blue':
+                #do it for every color
+                min_blue = max(min_blue, int(count))
+            elif color == 'green':
+                min_green = max(min_green, int(count))
+    total_power += min_red * min_green * min_blue
+
+print(total_power)
