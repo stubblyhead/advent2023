@@ -14,12 +14,12 @@ for l in lines:
     for d in draws:
         counts = d.split(', ')
         for c in counts:
-            cubes = c.split(' ')
-            if c[1] == 'red' and int(c[0]) > MAX_RED:
+            dice = c.split(' ')
+            if dice[1] == 'red' and int(dice[0]) > MAX_RED:
                 is_valid = False
-            if c[1] == 'green' and int(c[0]) > MAX_GREEN:
+            if dice[1] == 'green' and int(dice[0]) > MAX_GREEN:
                 is_valid = False
-            if c[1] == 'blue' and int(c[0]) > MAX_BLUE:
+            if dice[1] == 'blue' and int(dice[0]) > MAX_BLUE:
                 is_valid = False
     if is_valid:
         valid_count += game_num
