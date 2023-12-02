@@ -3,14 +3,14 @@ import regex
 lines = open('input').readlines(-1)
 calsum = 0
 
-#for l in lines:
-#    pattern = re.compile('\d')  #compiling since we're doing this a lot
-#    digits = pattern.findall(l)
-#    calsum += int(digits[0]) * 10 + int(digits[-1]) #first match is the 10s digit
+for l in lines:
+    pattern = regex.compile('\d')  #compiling since we're doing this a lot
+    digits = pattern.findall(l)
+    calsum += int(digits[0]) * 10 + int(digits[-1]) #first match is the 10s digit
 
-#print(calsum)
+print(calsum)
 
-#calsum = 0  #i am surprised I did not forget to do this
+calsum = 0  #i am surprised I did not forget to do this
 
 def word_to_int(word):
     if word == 'one':
@@ -36,8 +36,6 @@ for l in lines:
     #alternatively could s// words for digits?  not sure which would be faster
 
     digits = pattern.findall(l,overlapped=True)
-    print(l.strip())
-    print(digits)
     if len(digits[0]) > 1:
         firstnum = word_to_int(digits[0])
     else:
@@ -48,7 +46,6 @@ for l in lines:
     else:
         lastnum = int(digits[-1])
 
-    print(firstnum * 10 + lastnum, "\n")
     calsum += ((firstnum * 10)+ lastnum)
 
 print(calsum)
