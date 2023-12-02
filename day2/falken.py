@@ -1,4 +1,4 @@
-lines = open('testcase').readlines(-1)
+lines = open('input').readlines(-1)
 
 MAX_RED = 12
 MAX_GREEN = 13
