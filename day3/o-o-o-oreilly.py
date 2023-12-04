@@ -3,6 +3,7 @@ import collections
 lines = open('testcase').readlines(-1)
 partsum = 0
 gears = collections.defaultdict(list)
+gearprod = 0
 
 for i in range(len(lines)):
     cur = lines[i].strip()
@@ -39,29 +40,34 @@ for i in range(len(lines)):
 
         # going to try doing this differently to make part 2 easier
         pattern = re.compile('[^\.\d]')
+        if start == 0:
+            offset = 0
+        else:
+            offset = 1
         symbols = pattern.search(above)
         if symbols:
             partsum += num
             if symbols.group() == '*':  # need to take note of where these are for later
-                gears[(i-1,symbols.start()+start-1)].append(num)
+                gears[(i-1,symbols.start()+start-offset)].append(num)
 
         symbols = pattern.search(middle)
         if symbols:
             partsum += num
             if symbols.group() == '*':
-                gears[(i,symbols.start()+start-1)].append(num)
+                gears[(i,symbols.start()+start-offset)].append(num)
 
         symbols = pattern.search(below)
         if symbols:
             partsum += num
             if symbols.group() == '*':
-                gears[(i+1,symbols.start()+start-1)].append(num)
-
-
-
-
+                gears[(i+1,symbols.start()+start-offset)].append(num)
 
 print(partsum)
+for parts in gears.values():
+    if len(parts) == 2:
+        gearprod += parts[0] * parts[1]
+
+print(gearprod)
 
 # gearsum = 0
 # for i in range(len(lines)):
