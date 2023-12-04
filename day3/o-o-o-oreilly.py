@@ -1,6 +1,6 @@
 import regex as re
 import collections
-lines = open('testcase').readlines(-1)
+lines = open('input').readlines(-1)
 partsum = 0
 gears = collections.defaultdict(list)
 gearprod = 0
@@ -40,7 +40,7 @@ for i in range(len(lines)):
 
         # going to try doing this differently to make part 2 easier
         pattern = re.compile('[^\.\d]')
-        if start == 0:
+        if start == 0:  # not sure I understand why this is necessary, but it works
             offset = 0
         else:
             offset = 1
@@ -68,30 +68,3 @@ for parts in gears.values():
         gearprod += parts[0] * parts[1]
 
 print(gearprod)
-
-# gearsum = 0
-# for i in range(len(lines)):
-#     cur = lines[i].strip()
-#     if i == 0:
-#         prev = ''
-#     else:
-#         prev = lines[i-1].strip()
-#     if i == len(lines) - 1:
-#         next = ''
-#     else:
-#         next = lines[i+1].strip()
-
-#     pattern = re.compile('\*')
-#     gears = pattern.finditer(cur)  # find each potential gear
-#     for g in gears:
-#         idx = g.start()  # get position of candidate
-#         left_edge = max(0,idx-1)
-#         right_edge = min(len(cur)-1,idx+2)
-#         above = prev[left_edge:right_edge]  
-#         below = next[left_edge:right_edge]
-#         middle = cur[left_edge:right_edge]
-#         print(above)
-#         print(middle)
-#         print(below)
-#         print('\n')
-        
