@@ -77,3 +77,17 @@ for map in humid_loc.split('\n'):
     (dest, src, rng) = [ int(i) for i in map.split() ]
     for i in range(rng):
         humid[src + i] = dest + i
+
+locations = []
+for t in to_plant:
+    t_soil = seeds[t]
+    t_fert = soil[t_soil]
+    t_water = fert[t_fert]
+    t_light = water[t_water]
+    t_temp = light[t_light]
+    t_humid = temp[t_temp]
+    t_loc = humid[t_humid]
+    locations.append(t_loc)
+#    print(f'seed {t} goes in soil {t_soil} which gets fertilizer {t_fert} which gets water {t_water} which gets light {t_light} which should be at temperature {t_temp} and humidity {t_humid} and in location {t_loc}')
+
+print(min(locations))
