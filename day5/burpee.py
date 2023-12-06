@@ -1,4 +1,4 @@
-f = open('testcase')
+f = open('input')
 
 parts = f.read().split('\n\n')
 to_plant = parts[0].split(': ')[1]
