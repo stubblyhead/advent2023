@@ -37,3 +37,18 @@ for i in range(len(times)):
     #     timeprod *= (charge_diff + 1)
 
 print(timeprod)
+
+times = [ str(i) for i in times ]
+distances = [ str(i) for i in distances ]
+longtime = ''
+for i in times:
+    longtime += i
+longtime = int(longtime)
+
+longdist = ''
+for i in distances:
+    longdist += i
+longdist = int(longdist)
+min_charge = min_time(longtime, longdist)
+max_charge = max_time(longtime, longdist)
+print(max_charge - min_charge + 1)
