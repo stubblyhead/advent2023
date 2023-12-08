@@ -64,9 +64,19 @@ class Hand:
 with open('testcase') as f:
     lines = f.readlines()
 
+hands = {}
 for h in lines:
-    this_hand = Hand(h.split()[0])
-    hand_type = this_hand.get_type()
-    print(this_hand.cards, this_hand.get_type())
+    (c, v) = h.split()
+    hands[Hand(c)] = int(v)
+
+sorted_hands = list(hands.keys())
+sorted_hands.sort()
+winnings = 0
+
+for h in range(len(sorted_hands)):
+    bid = hands[sorted_hands[h]]
+    winnings += (h+1)*bid
+
+print(winnings)
 
 
