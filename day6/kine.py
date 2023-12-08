@@ -27,8 +27,8 @@ for i in range(len(times)):
     # between the two (inclusive)
     charge_diff = max_charge - min_charge
     if charge_diff % 2 == 0:
-        timeprod *= (max_charge - min_charge - 1)
+        timeprod *= (charge_diff - 1)
     else:
-        timeprod *= (max_charge - min_charge + 1)
+        timeprod *= (charge_diff + 1)
 
 print(timeprod)

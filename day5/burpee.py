@@ -16,7 +16,7 @@ class Map:
         else:
             return -1
 
-f = open('input')
+f = open('testcase')
 
 parts = f.read().split('\n\n')
 to_plant = parts[0].split(': ')[1]

@@ -4,15 +4,15 @@ class Map:
     # create object for each line of mappings
     def __init__(self, map_line):
         (dest,src,rng) = [ int(i) for i in map_line.split() ]
-        self.dest = dest
-        self.src = src
-        self.rng = rng
+        self.dest = range(dest,dest+rng)
+        self.src = range(src,src+rng)
+        # self.rng = rng
         
     def convert(self, src):
         # if source value is in this mapping return the correpsonding destination value,
         # otherwise return -1
-        if src in range(self.src, self.src + self.rng):
-            return src - self.src + self.dest
+        if src in self.src:
+            return self.dest[self.src.index(src)]
         else:
             return -1
 
@@ -49,8 +49,8 @@ humid_loc = []
 to_plant = []
 seed_line = [ int(i) for i in seed_line.split() ]
 for i in range(0, len(seed_line), 2):
-    for j in range(seed_line[i+1]):
-        to_plant.append(seed_line[i] + j)
+    to_plant.append(range(seed_line[i],seed_line[i] + seed_line[i+1]))
+
 
 for l in seed_soil_lines.split('\n'):
     seed_soil.append(Map(l))
