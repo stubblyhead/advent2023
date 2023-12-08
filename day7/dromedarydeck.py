@@ -1,4 +1,6 @@
 class Hand:
+    card_order = ( '2', '3', '4','5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A' )
+
     def __init__(self, cards):
       self.cards = cards
 
@@ -29,7 +31,34 @@ class Hand:
         else:
             return 1 # high card
 
-        
+    def __lt__(self, a):
+        # self < a
+        if self.get_type() < a.get_type():
+            return True # self is weaker hand type than a
+        elif self.get_type() > a.get_type():
+            return False # self is stronger hand type than a
+        else:
+            # self and a are same hand type, so check each card
+            for i in range(5):
+                if Hand.card_order.index(self.cards[i]) < Hand.card_order.index(a.cards[i]):
+                    return True  # self 
+                elif Hand.card_order.index(self.cards[i]) > Hand.card_order.index(a.cards[i]):
+                    return False
+                
+    def __gt__(self, a):
+        # self > a
+        if self.get_type() < a.get_type():
+            return False # self is weaker hand type than a
+        elif self.get_type() > a.get_type():
+            return True # self is stronger hand type than a
+        else:
+            # self and a are same hand type, so check each card
+            for i in range(5):
+                if Hand.card_order.index(self.cards[i]) < Hand.card_order.index(a.cards[i]):
+                    return False  # self 
+                elif Hand.card_order.index(self.cards[i]) > Hand.card_order.index(a.cards[i]):
+                    return True
+
 
 
 with open('testcase') as f:
