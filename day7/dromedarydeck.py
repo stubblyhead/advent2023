@@ -61,7 +61,7 @@ class Hand:
 
 
 
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
 hands = {}
