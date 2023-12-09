@@ -82,7 +82,7 @@ class Hand:
 
 
 
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
 hands = {}
@@ -92,8 +92,6 @@ for h in lines:
 
 sorted_hands = list(hands.keys())
 sorted_hands.sort()
-for h in sorted_hands:
-    print(h.cards)
 winnings = 0
 
 for h in range(len(sorted_hands)):
