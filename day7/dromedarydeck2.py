@@ -38,12 +38,17 @@ class Hand:
         elif histo['J'] == 3:
             return temprank + 2 # 3oaK to FH or FH to 5oaK
         elif histo['J'] == 2:
-            return temprank + 2
+            if temprank == 3:
+                return 6
+            else:
+                return temprank + 2
         elif histo['J'] == 1:
             if temprank == 1 or temprank == 6:
                 return temprank + 1
             else:
                 return temprank + 2
+        else:
+            return temprank # no J, so don't need to adjust
 
         
 
@@ -87,6 +92,8 @@ for h in lines:
 
 sorted_hands = list(hands.keys())
 sorted_hands.sort()
+for h in sorted_hands:
+    print(h.cards)
 winnings = 0
 
 for h in range(len(sorted_hands)):
