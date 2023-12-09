@@ -1,13 +1,13 @@
 from itertools import cycle
 
-with open('testcase2') as f:
+with open('input') as f:
     lines = f.readlines()
 
 dirs = cycle(lines[0].strip())
 
 nodes = {}
 
-for i in lines[2:]: # first line is the directions, next line is just a newline
+for i in lines[2:]: # first line is the directions, next line is just a``
     (node, dests) = i.split(' = ')
     (left, right) = [dests[1:4], dests[6:9]]
     nodes[node] = [left,right]
