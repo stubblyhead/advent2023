@@ -1,6 +1,7 @@
 from itertools import cycle
+from math import gcd
 
-with open('testcase3') as f:
+with open('input') as f:
     lines = f.readlines()
 
 dirs = cycle(lines[0].strip())
@@ -26,35 +27,20 @@ def get_steps(nodes, dirs, start_node):
 
     return(stepcount)
 
-stepcount = 1
+counts = []
 for n in nodes.keys():
     if n[-1] == 'A':
         thiscount = get_steps(nodes, dirs, n)
         if n == 'AAA':
             print(thiscount)
-        stepcount *= thiscount
-print(stepcount)
+        counts.append(thiscount)
+# need least common multiple of individual counts
 
-# stepcount = 0
-
-# cur_nodes = []
-# for n in nodes.keys():
-#     if n[-1] == 'A':
-#         cur_nodes.append(n)  # add nodes to cur_nodes list if last letter is A
-
-# for d in dirs:
-#     z_count = 0 # keep track of Z-node count in each loop so we don't need to loop through a second time
-#     stepcount += 1  # increment the number of steps
-#     for i in range(len(cur_nodes)):
-#         if d == 'L':
-#             cur_nodes[i] = nodes[cur_nodes[i]][0]  # next node is the left one            
-#         else:
-#             cur_nodes[i] = nodes[cur_nodes[i]][1]  # next node is the right one
-        
-#         if cur_nodes[i][-1] == 'Z':
-#             z_count += 1
+stepcount = 1
+for i in counts:
+    # for each starting node's count, multiply by the current total count and
+    # divide by the greatest common denominator
+    factor = gcd(stepcount,i)
+    stepcount = stepcount * i // factor
     
-#     if z_count == len(cur_nodes):
-#         break  # we're at the destination, so break out of the loop
-
-# print(stepcount)
+print(stepcount)
