@@ -3,6 +3,7 @@ class Pipes:
         # not sure if I'll need these but why not
         self.width = len(layout[0])
         self.height = len(layout)
+        self.layout = layout
 
         for i in range(len(layout)):
             if layout[i].find('S') >= 0:  # start is in this row
@@ -21,6 +22,16 @@ class Pipes:
         cxn = dests[cur] # get directions this tile can go
         cxn.remove(origin) # get rid of the one we came from
         return cxn[0] # the one that's left is the directon we go next
+    
+    def get_opposite(dir):
+        if dir == 'N':
+            return 'S'
+        if dir == 'S':
+            return 'N'
+        if dir == 'E':
+            return 'W'
+        if dir == 'W':
+            return 'E'
 
 
     def traverse(self):
@@ -50,23 +61,25 @@ class Pipes:
                 origin = 'W'
         while self.path[-1] != [self.start_row, self.start_col]:  # when we get back to the beginning we've got a full loop
             (cur_row, cur_col) = self.path[-1]  # get the row and col of the last tile
-            next_dir = Pipes.get_next(self.layout[cur_row][cur_col])
+            next_dir = Pipes.get_next(self.layout[cur_row][cur_col], origin)
             if next_dir == 'N':
-                self.path.append([cur_row - 1][cur_col])
+                self.path.append([cur_row - 1, cur_col])
             elif next_dir == 'S':
-                self.path.append([cur_row + 1][cur_col])
+                self.path.append([cur_row + 1, cur_col])
             elif next_dir == 'E':
-                self.path.append([cur_row][cur_col - 1])
+                self.path.append([cur_row, cur_col + 1])
             elif next_dir == 'W':
-                self.path.append([cur_row][cur_col + 1])
+                self.path.append([cur_row, cur_col - 1])
+            origin = Pipes.get_opposite(next_dir)
+            
 
 
 with open('testcase') as f:
-    lines = f.readlines()
+    lines = [ i.strip() for i in f.readlines() ]
 
 my_maze = Pipes(lines)
 
 my_maze.traverse()
 
-
+print(len(my_maze.path) // 2) # farthest away is half of the total length
             
