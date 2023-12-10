@@ -74,7 +74,7 @@ class Pipes:
             
 
 
-with open('testcase') as f:
+with open('testcase2') as f:
     lines = [ i.strip() for i in f.readlines() ]
 
 my_maze = Pipes(lines)
