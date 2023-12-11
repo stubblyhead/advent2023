@@ -81,8 +81,14 @@ class Pipes:
                 c = c.replace('J', "\u2518")
                 c = c.replace('F', "\u250C")
                 c = c.replace('L', "\u2514")
-                if [i,j] in self.path:
+                c = c.replace('|', "\u2502")
+                c = c.replace('-', "\u2500")
+                if (i,j) in self.path:
                     c = "\033[91m" + c + "\033[0m"
+                elif (i,j) in self.left_nodes:
+                    c = "\033[94m" + c + "\033[0m"
+                elif (i,j) in self.right_nodes:
+                    c = "\033[92m" + c + "\033[0m"
                 templine += c
             print(templine)
 
@@ -134,7 +140,8 @@ class Pipes:
         # remove path nodes from left and right
         left_nodes -= set(path)
         right_nodes -= set(path)
-
+        self.left_nodes = left_nodes
+        self.right_nodes = right_nodes
         # now need to figure out which is inside and which is outside
         for n in left_nodes:
             if n.count(0) > 0:
@@ -182,7 +189,7 @@ class Pipes:
         
 
 
-with open('testcase') as f:
+with open('input') as f:
     lines = [ i.strip() for i in f.readlines() ]
 
 my_maze = Pipes(lines)
@@ -191,5 +198,5 @@ my_maze.traverse()
 
 print(len(my_maze.path) // 2) # farthest away is half of the total length
 print()
-my_maze.print_maze()
 print(my_maze.get_area())
+my_maze.print_maze()
