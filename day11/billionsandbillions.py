@@ -5,7 +5,7 @@ def taxi_dist(a,b):
     return dist
 
 
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
 map = [ [ i for i in list(j.strip()) ] for j in lines ]
@@ -80,14 +80,13 @@ for i in range(len(galaxies) - 1):
             top = min(galaxies[i][0],galaxies[j][0])
             bottom = max(galaxies[i][0],galaxies[j][0])
             if r > top and r < bottom:
-                dist += 1 # already have one, need 1e6 total, so add 999999
+                dist += 999999 # already have one, need 1e6 total, so add 999999
         for r in empty_cols:
             left = min(galaxies[i][1],galaxies[j][1])
             right = max(galaxies[i][1],galaxies[j][1])
             if r > left and r < right:
-                dist += 1 # already have one, need 1e6 total, so add 999999
+                dist += 999999 # already have one, need 1e6 total, so add 999999
         totaldist += dist
-        print(dist)
 
 print(totaldist)
 
