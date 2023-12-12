@@ -32,7 +32,9 @@ for i in map:
     else:
         tempmap += [i]
 map = list(tempmap)
-
+txpose = np.array(map)
+txpose = txpose.transpose()
+map = txpose.tolist()
 galaxies = []
 for i in range(len(map)):
     for j in range(len(map[0])):
@@ -41,9 +43,10 @@ for i in range(len(map)):
 
 totaldist = 0
 for i in range(len(galaxies)-1):
-    for j in range(i,len(galaxies)):
-        totaldist += taxi_dist(galaxies[i],galaxies[j])
-
+    for j in range(i + 1,len(galaxies)):
+        dist = taxi_dist(galaxies[i],galaxies[j])
+        totaldist += dist
+        print(dist)
 print(totaldist)
 
 # part two, going to try a different approach
@@ -69,16 +72,23 @@ for i in range(len(map)):
             galaxies.append([i,j])
 
 totaldist = 0
-
-for i in range(len(galaxies)):
-    for j in range(i,len(galaxies)):
-        totaldist += taxi_dist(galaxies[i],galaxies[j])
+distcount = 0
+for i in range(len(galaxies) - 1):
+    for j in range(i + 1,len(galaxies)):
+        dist = 0
+        dist += taxi_dist(galaxies[i],galaxies[j])
         for r in empty_rows:
-            if r > galaxies[i][0] and r < galaxies[j][0]:
-                totaldist += 10 # already have one, need 1e6 total, so add 999999
+            top = min(galaxies[i][0],galaxies[j][0])
+            bottom = max(galaxies[i][0],galaxies[j][0])
+            if r > top and r < bottom:
+                dist += 9 # already have one, need 1e6 total, so add 999999
         for r in empty_cols:
+            left = min(galaxies[i][1],galaxies[j][1])
+            right = max(galaxies[i][1],galaxies[j][1])
             if r > galaxies[i][1] and r < galaxies[j][1]:
-                totaldist += 10 # already have one, need 1e6 total, so add 999999
+                dist += 9 # already have one, need 1e6 total, so add 999999
+        totaldist += dist
+        print(dist)
 
 print(totaldist)
 
