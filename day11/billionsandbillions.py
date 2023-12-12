@@ -5,7 +5,7 @@ def taxi_dist(a,b):
     return dist
 
 
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
 map = [ [ i for i in list(j.strip()) ] for j in lines ]
@@ -20,11 +20,9 @@ for i in map:
         tempmap += [i]  # otherwise only add once
 
 map = list(tempmap)
-print(map)
 txpose = np.array(map)
 txpose = txpose.transpose()
 map = txpose.tolist()
-print(map)
 
 #  now do this again after transposing
 tempmap = []
