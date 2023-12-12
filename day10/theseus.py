@@ -85,75 +85,98 @@ class Pipes:
                 c = c.replace('-', "\u2500")
                 if (i,j) in self.path:
                     c = "\033[91m" + c + "\033[0m"
-                elif (i,j) in self.left_nodes:
+                elif (i,j) in self.inside:
                     c = "\033[94m" + c + "\033[0m"
-                elif (i,j) in self.right_nodes:
+                elif (i,j) in self.outside:
                     c = "\033[92m" + c + "\033[0m"
                 templine += c
             print(templine)
 
     def get_area(self):
-        # get list of all points not on the path.  traverse the path, keeping track of
-        # left vs right in first-person perspective.  left side and right side go in
-        # separate arrays.  remove path points from both.  whichever one touches the
-        # edge is outside, the other is inside.
+        # start at upper left, assume outside the loop.  add tiles to outside set until
+        # we hit the path.  next non-path will be inside.  if current tile and previous
+        # tile are both vertical path members (i.e. not -) then inside/outside region was
+        # zero width, so toggle what the next non-path will be
 
         path = self.path
         layout = self.layout
-        allpoints = [ (i,j) for i in range(len(layout)) for j in range(len(layout[i])) ]  # using a set here will make it easier to split things up later
-        allpoints = set(allpoints)
-        not_path = set()
-        left_nodes = set()
-        right_nodes = set()
-        for p in allpoints:
-            if p not in path:
-                not_path.add(p)
-        dir_of_travel = ''
-        if path[1][0] > path[0][0]:
-            dir_of_travel = 'S'
-        elif path[0][0] > path[1][0]:
-            dir_of_travel = 'N'
-        elif path[1][1] > path[0][1]:
-            dir_of_travel = 'E'
-        elif path[0][1] > path[1][1]:
-            dir_of_travel = 'W'
-        for i in range(1,len(path)):
-            p = path[i]
-            prev = path[i-1]
-            if p[0] > prev[0]:
-                dir_of_travel = 'S'
-            elif prev[0] > p[0]:
-                dir_of_travel = 'N'
-            elif p[1] > prev[1]:
-                dir_of_travel = 'E'
-            elif prev[1] > p[1]:
-                dir_of_travel = 'W'
+        (start_row,start_col) = path[0]
+        inside = []
+        outside = []
+        start_tile = self.get_start_tile()
+        self.layout[start_row] = self.layout[start_row][:start_col] + start_tile + self.layout[start_row][start_col+1:]
+        
 
-            (left_dir,right_dir) = Pipes.get_left_right(dir_of_travel)
-            left = Pipes.get_adj(self, p, left_dir)
-            right = Pipes.get_adj(self, p, right_dir)
-            if left:
-                left_nodes.add(tuple(left))
-            if right:
-                right_nodes.add(tuple(right))
-            
-        # remove path nodes from left and right
-        left_nodes -= set(path)
-        right_nodes -= set(path)
-        self.left_nodes = left_nodes
-        self.right_nodes = right_nodes
-        # now need to figure out which is inside and which is outside
-        for n in left_nodes:
-            if n.count(0) > 0:
-                return len(right_nodes)
-            elif n[0] == self.height:
-                return len(right_nodes)
-            elif n[1] == self.width:
-                return len(right_nodes)
-            else:
-                return len(left_nodes)
-
+        for row in range(self.height):
+            next_nonpath = 'O'
+            for col in range(self.width):
+                p = (row,col)
                 
+                if p not in path:  # junk tiles
+
+                    if next_nonpath == 'O':
+                        outside.append(p)
+                    else:
+                        inside.append(p)
+                else:  # path tiles
+                    cur = layout[row][col]
+
+                    if col > 0:
+                        
+                        prev = layout[row][col-1]
+                        prev_tile = (row,col-1)
+                        cur_and_prev = prev + cur
+                    else:
+                        next_nonpath = 'I'
+                    
+                    if cur == '-':
+                        next # never need to do anything for these
+                    
+                    zero_width = ['7F', 'JL', 'F7', '7F', '|F', '|L']
+                    corners = ['J','F','L','7']
+                    #zigzag = ['FJ', 'L7']
+
+                    if cur == 'L' or cur == 'F': # left-hand corners
+                        left_corner = cur
+
+                    if prev_tile in inside: 
+                        next_nonpath = 'O'
+                    elif prev_tile in outside:
+                        next_nonpath = 'I'
+                    # lots of cases for adjacent corners
+                    elif cur_and_prev in zero_width:
+                        next_nonpath = Pipes.swap_next(next_nonpath)
+                    elif cur == '|':
+                        next_nonpath = Pipes.swap_next(next_nonpath)
+                    elif cur == 'J':
+                        if left_corner == 'F':
+                            next
+                        else:
+                            next_nonpath = Pipes.swap_next(next_nonpath)
+                    elif cur == '7':
+                        if left_corner == 'L':
+                            next
+                        else:
+                            next_nonpath = Pipes.swap_next(next_nonpath)
+                        
+                    # elif cur in corners:
+                    #     next_nonpath = Pipes.swap_next(next_nonpath)
+                foo = True   
+                    
+        self.layout[start_row] = self.layout[start_row][:start_col] + 'S' + self.layout[start_row][start_col+1:]
+        
+
+
+        self.inside = inside
+        self.outside = outside
+
+        return len(inside)
+
+    def swap_next(next):
+        if next == 'O':
+            return 'I'
+        else:
+            return 'O'            
 
 
     def get_left_right(dir):
@@ -185,11 +208,50 @@ class Pipes:
             if adj[1] == self.width:
                 return []
         return adj
+    
+    def get_start_tile(self):
+        # get two tiles adjacent to start
+        before = self.path[1]
+        after = self.path[-2]
+        start = self.path[0]
+        ends = []
+        if before[0] == start[0] and before[1] < start[1]:
+            ends.append('W')
+        elif before[0] == start[0] and before[1] > start[1]:
+            ends.append('E')
+        elif before[0] < start[0] and before[1] == start[1]:
+            ends.append('N')
+        elif before[0] > start[0] and before[1] == start[1]:
+            ends.append('S')
+        
+        if after[0] == start[0] and after[1] < start[1]:
+            ends.append('W')
+        elif after[0] == start[0] and after[1] > start[1]:
+            ends.append('E')
+        elif after[0] < start[0] and after[1] == start[1]:
+            ends.append('N')
+        elif after[0] > start[0] and after[1] == start[1]:
+            ends.append('S')
+
+        ends.sort()
+        if ends == ['E','N']:
+            return 'L'
+        elif ends == ['N','S']:
+            return '|'
+        elif ends == ['N','W']:
+            return 'J'
+        elif ends == ['E','S']:
+            return 'F'
+        elif ends == ['E','W']:
+            return '-'
+        elif ends == ['S','W']:
+            return '7'
+
         
         
 
 
-with open('input') as f:
+with open('testcase2') as f:
     lines = [ i.strip() for i in f.readlines() ]
 
 my_maze = Pipes(lines)
