@@ -5,7 +5,7 @@ def taxi_dist(a,b):
     return dist
 
 
-with open('input') as f:
+with open('testcase') as f:
     lines = f.readlines()
 
 map = [ [ i for i in list(j.strip()) ] for j in lines ]
@@ -45,3 +45,42 @@ for i in range(len(galaxies)-1):
         totaldist += taxi_dist(galaxies[i],galaxies[j])
 
 print(totaldist)
+
+# part two, going to try a different approach
+
+map = [ [ i for i in list(j.strip()) ] for j in lines ]
+empty_cols = []
+empty_rows = []
+
+for i in range(height):
+    if map[i].count('#') == 0:
+        empty_rows.append(i)
+    
+for i in range(width):
+    for j in [[ x[i] for x in map ]]:
+    
+        if j.count('#') == 0:
+            empty_cols.append(i)
+
+galaxies = []
+for i in range(len(map)):
+    for j in range(len(map[0])):
+        if map[i][j] == '#':
+            galaxies.append([i,j])
+
+totaldist = 0
+
+for i in range(len(galaxies)):
+    for j in range(i,len(galaxies)):
+        totaldist += taxi_dist(galaxies[i],galaxies[j])
+        for r in empty_rows:
+            if r > galaxies[i][0] and r < galaxies[j][0]:
+                totaldist += 10 # already have one, need 1e6 total, so add 999999
+        for r in empty_cols:
+            if r > galaxies[i][1] and r < galaxies[j][1]:
+                totaldist += 10 # already have one, need 1e6 total, so add 999999
+
+print(totaldist)
+
+
+
