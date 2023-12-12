@@ -46,7 +46,6 @@ for i in range(len(galaxies)-1):
     for j in range(i + 1,len(galaxies)):
         dist = taxi_dist(galaxies[i],galaxies[j])
         totaldist += dist
-        print(dist)
 print(totaldist)
 
 # part two, going to try a different approach
@@ -81,12 +80,12 @@ for i in range(len(galaxies) - 1):
             top = min(galaxies[i][0],galaxies[j][0])
             bottom = max(galaxies[i][0],galaxies[j][0])
             if r > top and r < bottom:
-                dist += 9 # already have one, need 1e6 total, so add 999999
+                dist += 1 # already have one, need 1e6 total, so add 999999
         for r in empty_cols:
             left = min(galaxies[i][1],galaxies[j][1])
             right = max(galaxies[i][1],galaxies[j][1])
-            if r > galaxies[i][1] and r < galaxies[j][1]:
-                dist += 9 # already have one, need 1e6 total, so add 999999
+            if r > left and r < right:
+                dist += 1 # already have one, need 1e6 total, so add 999999
         totaldist += dist
         print(dist)
 
