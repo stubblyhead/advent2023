@@ -134,7 +134,6 @@ class Pipes:
                     
                     zero_width = ['7F', 'JL', 'F7', '7F', '|F', '|L']
                     corners = ['J','F','L','7']
-                    #zigzag = ['FJ', 'L7']
 
                     if cur == 'L' or cur == 'F': # left-hand corners
                         left_corner = cur
@@ -158,9 +157,8 @@ class Pipes:
                             next
                         else:
                             next_nonpath = Pipes.swap_next(next_nonpath)
-                        
-                    # elif cur in corners:
-                    #     next_nonpath = Pipes.swap_next(next_nonpath)
+                    elif cur_and_prev in ['JF','7L']:
+                        next_nonpath = Pipes.swap_next(next_nonpath)
                 foo = True   
                     
         self.layout[start_row] = self.layout[start_row][:start_col] + 'S' + self.layout[start_row][start_col+1:]
