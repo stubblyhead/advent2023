@@ -9,24 +9,38 @@ totalcount = 0
 def simplify_pattern(pattern, springs):
     # if a ? must be a # to satisfy conditions, update it as such
 
-    left = right = ''
+    compact = ''  # spring patterns in as little space as possible
+    locks = []  # list of spaces that have to be a spring
     for i in range(len(springs)):
         for j in range(springs[i]):
-            left += str(i)
-        left += '.'
+            compact += str(i)
+        compact += '.'
+    compact = compact[:-1] # don't need the final .
+    left = compact.ljust(len(pattern), '.')
+    right = compact.rjust(len(pattern), '.')
 
-    if len(left) > len(pattern):
-        left = left[0:len(pattern)]
-    print(left)
+    for i in range(len(left)):
+        if left[i].isdigit() and left[i] == right[i]:
+            locks.append(i)
+
+    simple = ''
+    for i in range(len(pattern)):
+        if i in locks:
+            simple += '#'
+        else:
+            simple += pattern[i]
+    return simple
 
 
 
-def find_valid_range(pattern, spring_count):
+
+def find_valid_range(pattern, spring_count, space_needed):
     # returns a starting position for the given group of springs
-    reg = re.compile('[#\?]{' + str(spring_count) + ',}^#') 
+    reg = re.compile('[#\?]{' + str(spring_count) + ',}[^#]') 
     # at least the given number springs/unknowns, not followed by a known spring
-
-    return reg.search(pattern).start()
+    remaining = len(pattern) - (space_needed - spring_count - 1) # need at least this many spaces left
+    return [ m.start() for m in reg.finditer(pattern, overlapped=True, endpos=remaining) ]
+    
 
 
 
@@ -34,10 +48,9 @@ for l in lines:
     (pattern, springs) = l.split(' ')
     springs = [ int(i) for i in springs.split(',') ]
 
-    simplify_pattern(pattern,springs)
-    # knock out the easy ones, not sure how I'm going to approach a general case
-
-
+    pattern = simplify_pattern(pattern,springs)
+    
+    
     # if len(pattern) == sum(springs) + len(springs) - 1:
     #     totalcount += 1  # need enough spaces for each group plus one space in between each
 
