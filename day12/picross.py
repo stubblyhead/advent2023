@@ -7,21 +7,23 @@ with open('testcase') as f:
 totalcount = 0
 
 def find_springs(pattern, springs):
+    scratch = pattern
     # if a ? must be a # to satisfy conditions, update it as such
-    left = pattern
     for i in range(len(springs)):
         this_length = springs[i]
-        start_pos = find_valid_range(pattern,springs[i])
+        start_pos = find_valid_range(scratch,springs[i])
         for j in range(start_pos,start_pos + this_length):
-            left = left[:j] + str(i) + left[j+1:]
-        left = left[0:this_length] + find_springs(left[this_length:],springs[i+1:])
+            scratch = scratch[:j] + str(i) + scratch[j+1:]
+        
+        pattern = []
 
     return left
 
 
 def find_valid_range(pattern, spring_count):
     # returns a starting position for the given group of springs
-    reg = re.compile('[#\?]{' + str(spring_count) + '}')
+    reg = re.compile('[#\?]{' + str(spring_count) + ',}^#') 
+    # at least the given number springs/unknowns, not followed by a known spring
 
     return reg.search(pattern).start()
 
