@@ -32,15 +32,32 @@ def simplify_pattern(pattern, springs):
     return simple
 
 
-
-
-def find_valid_range(pattern, spring_count, space_needed):
+def find_valid_range(pattern, springs):
     # returns a starting position for the given group of springs
-    reg = re.compile('[#\?]{' + str(spring_count) + ',}[^#]') 
+    p = '[#\?]{' + str(springs[0]) + '}' 
+    for s in springs[1:]:
+        p = p + '[\.\?]+[#\?]{' + str(s) + '}' 
+
+
+    reg = re.compile(p) 
     # at least the given number springs/unknowns, not followed by a known spring
-    remaining = len(pattern) - (space_needed - spring_count - 1) # need at least this many spaces left
-    return [ m.start() for m in reg.finditer(pattern, overlapped=True, endpos=remaining) ]
+    # remaining = len(pattern) - (space_needed - spring_count - 1) # need at least this many spaces left
+    return [ m.start() for m in reg.finditer(pattern, overlapped=True) ]
     
+def count_arrangements(pattern, springs):
+    count = 1
+    if len(springs) > 1:
+        this_group = springs[0]
+        space_needed = sum(springs) + (len(springs) - 1)
+        positions = find_valid_range(pattern, springs)
+        count = len(positions)
+        for p in positions:
+            sub_pattern = pattern[p + this_group + 1:]
+            return count * count_arrangements(sub_pattern, springs[1:])
+    else:
+        positions = find_valid_range(pattern, springs)
+        count *= len(positions)
+        return count
 
 
 
@@ -50,7 +67,4 @@ for l in lines:
 
     pattern = simplify_pattern(pattern,springs)
     
-    
-    # if len(pattern) == sum(springs) + len(springs) - 1:
-    #     totalcount += 1  # need enough spaces for each group plus one space in between each
-
+    print(count_arrangements(pattern, springs))
