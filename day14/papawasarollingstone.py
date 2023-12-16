@@ -20,11 +20,6 @@ class Platform:
                 if self.grid[i][j] == 'O':
                     self.roll(i, j)
     
-
-
-
-
-
 with open('testcase') as f:
     lines = f.readlines()
 
@@ -32,5 +27,11 @@ with open('testcase') as f:
 
     grid.tilt()
 
-    for i in grid.grid:
-        print(str(i))
+    weight = 0
+
+    for i in range(len(grid.grid)):
+        for j in grid.grid[i]:
+            if j == 'O':
+                weight += len(grid.grid) - i
+
+    print(weight)
