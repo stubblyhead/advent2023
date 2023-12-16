@@ -20,7 +20,7 @@ class Platform:
                 if self.grid[i][j] == 'O':
                     self.roll(i, j)
     
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
     grid = Platform(lines)
