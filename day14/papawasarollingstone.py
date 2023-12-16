@@ -18,25 +18,59 @@ class Platform:
                     break
                 if row == 0 or row == len(self.grid) - 1:  # stop if the rock is in the top or bottom row
                     break
+        if dir == 'E' or dir == 'W':
+            grid_row = self.grid[row]
+            if dir == 'E':
+                delta = +1
+            else:
+                delta = -1
+            while True:
+                if grid_row[col + delta] == '.':
+                    self.grid[row][col + delta] = 'O'
+                    self.grid[row][col] = '.'
+                    col = col + delta
+                else:
+                    break
+                if col == 0 or col == len(self.grid[row]) -1:
+                    break
 
-    def tilt(self):
-        for i in range(1,len(self.grid)): # don't need to move rocks already in the top row
-            for j in range(len(self.grid[i])):
-                if self.grid[i][j] == 'O':
-                    self.roll(i, j, 'N')
+    def tilt(self, dir):
+        if dir == 'N':
+            for i in range(1,len(self.grid)): # don't need to move rocks already in the top row
+                for j in range(len(self.grid[i])):
+                    if self.grid[i][j] == 'O':
+                        self.roll(i, j, dir)
+        elif dir == 'S':
+            for i in range(len(self.grid)-2,-1,-1):
+                for j in range(len(self.grid[i])):
+                    if self.grid[i][j] == 'O':
+                        self.roll(i,j,dir)
+        elif dir == 'W':
+            for i in range(len(self.grid)):
+                for j in range(1,len(self.grid[i])):
+                    if self.grid[i][j] == 'O':
+                        self.roll(i,j,dir)
+        elif dir == 'E':
+            for i in range(len(self.grid)):
+                for j in range(len(self.grid[i])-2,-1,-1):
+                    if self.grid[i][j] == 'O':
+                        self.roll(i,j,dir)
     
-with open('input') as f:
+with open('testcase') as f:
     lines = f.readlines()
 
     grid = Platform(lines)
 
-    grid.tilt()
+    grid.tilt('W')
 
-    weight = 0
+    # weight = 0
 
-    for i in range(len(grid.grid)):
-        for j in grid.grid[i]:
-            if j == 'O':
-                weight += len(grid.grid) - i
+    # for i in range(len(grid.grid)):
+    #     for j in grid.grid[i]:
+    #         if j == 'O':
+    #             weight += len(grid.grid) - i
 
-    print(weight)
+    # print(weight)
+
+    for i in grid.grid:
+        print(str(i))
