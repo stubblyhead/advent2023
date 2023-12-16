@@ -31,12 +31,23 @@ def fix_smudge(pattern):
         above = pattern[:i] # starts off pretty much the same
         below = pattern[i:]
         above.reverse()
-        one_off = True
+        one_off = False
         if len(above) < len(below):
             for j in range(len(above)):
                 if above[j] == below[j]:
                     next
                 elif compare_lines(above[j], below[j]):
+                    one_off = True
+                    next
+                else:
+                    one_off = False
+                    break
+        else:
+            for j in range(len(below)):
+                if above[j] == below[j]:
+                    next
+                elif compare_lines(above[j],below[j]):
+                    one_off = True
                     next
                 else:
                     one_off = False
@@ -64,7 +75,10 @@ for p in patterns:
     p = p.split()
     tpose = []
     for i in range(len(p[0])):
-        tpose.append( [ l[i] for l in p ] )
+        tmp = ''
+        for j in p:
+            tmp += j[i]
+        tpose.append(tmp)
 
     h = check_reflection(p)
     if h > 0:
