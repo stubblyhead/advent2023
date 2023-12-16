@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 class Platform:
     def __init__(self, layout):
         self.grid = [ list(i.strip()) for i in layout ] # 2-D list, each char in its own slot
@@ -67,16 +69,23 @@ with open('testcase') as f:
 
     grid = Platform(lines)
 
-    for i in range(3):
+    spin_patterns = []
+    for s in range(100):
         grid.spin()
-    # weight = 0
+        if grid.grid in spin_patterns:
+            print(str(s) + " same as " + str(spin_patterns.index(grid.grid)))
+        else:
+            spin_patterns.append(deepcopy(grid.grid))
+        weight = 0
 
-    # for i in range(len(grid.grid)):
-    #     for j in grid.grid[i]:
-    #         if j == 'O':
-    #             weight += len(grid.grid) - i
+        for i in range(len(grid.grid)):
+            for j in grid.grid[i]:
+                if j == 'O':
+                    weight += len(grid.grid) - i
 
-    # print(weight)
+        #print("iteration " + str(s) + " has weight " + str(weight))
 
-    for i in grid.grid:
-        print(str(i))
+    print(str(len(spin_patterns)) + " different patterns")
+
+    
+
