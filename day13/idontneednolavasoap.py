@@ -26,8 +26,40 @@ def check_reflection(pattern):
       
     return -1  # got all the way through and didn't find a reflection
 
+def fix_smudge(pattern):
+    for i in range(1,len(pattern)):
+        above = pattern[:i] # starts off pretty much the same
+        below = pattern[i:]
+        above.reverse()
+        one_off = True
+        if len(above) < len(below):
+            for j in range(len(above)):
+                if above[j] == below[j]:
+                    next
+                elif compare_lines(above[j], below[j]):
+                    next
+                else:
+                    one_off = False
+                    break
+        if one_off:
+            return i
+    return -1
 
-total = 0
+def compare_lines(a, b):
+    # return True if there's a single character different, otherwise False
+    diff = 0
+    for i in range(len(a)):
+        if a[i] != b[i]:
+            diff += 1
+            if diff > 1:
+                return False  # no need to keep checking if there's more than 1
+    if diff == 1:
+        return True
+    else:  # shouldn't ever get here, but probably should do this
+        raise ValueError  
+
+part_one_total = 0
+part_two_total = 0
 for p in patterns:
     p = p.split()
     tpose = []
@@ -36,10 +68,18 @@ for p in patterns:
 
     h = check_reflection(p)
     if h > 0:
-        total += 100 * h
+        part_one_total += 100 * h
         next
     else:
         v = check_reflection(tpose)
-        total += v
+        part_one_total += v
 
-print(total)
+    h = fix_smudge(p)
+    if h > 0:
+        part_two_total += 100 * h
+    else:
+        v = fix_smudge(tpose)
+        part_two_total += v
+
+print(part_one_total)
+print(part_two_total)
