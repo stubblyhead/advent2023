@@ -64,28 +64,20 @@ class Platform:
         self.tilt('S')
         self.tilt('E')
     
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
     grid = Platform(lines)
 
     spin_patterns = []
-    for s in range(100):
+    for s in range(1_000_000_000%39+156):
         grid.spin()
-        if grid.grid in spin_patterns:
-            print(str(s) + " same as " + str(spin_patterns.index(grid.grid)))
-        else:
-            spin_patterns.append(deepcopy(grid.grid))
-        weight = 0
+    weight = 0
 
-        for i in range(len(grid.grid)):
-            for j in grid.grid[i]:
-                if j == 'O':
-                    weight += len(grid.grid) - i
-
-        #print("iteration " + str(s) + " has weight " + str(weight))
-
-    print(str(len(spin_patterns)) + " different patterns")
-
-    
+    for i in range(len(grid.grid)):
+        for j in grid.grid[i]:
+            if j == 'O':
+                weight += len(grid.grid) - i
+    print(weight)
+        
 
