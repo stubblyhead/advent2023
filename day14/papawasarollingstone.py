@@ -55,14 +55,20 @@ class Platform:
                 for j in range(len(self.grid[i])-2,-1,-1):
                     if self.grid[i][j] == 'O':
                         self.roll(i,j,dir)
+
+    def spin(self):
+        self.tilt('N')
+        self.tilt('W')
+        self.tilt('S')
+        self.tilt('E')
     
 with open('testcase') as f:
     lines = f.readlines()
 
     grid = Platform(lines)
 
-    grid.tilt('W')
-
+    for i in range(3):
+        grid.spin()
     # weight = 0
 
     # for i in range(len(grid.grid)):
