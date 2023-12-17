@@ -25,7 +25,8 @@ for s in steps:
 
 print(hash_sum)
 
-boxen = [ None for i in range(256) ] # create list with 256 elements
+boxen = [ [] for i in range(256) ] # create list with 256 elements
 for s in steps:
     if s[-1].isnumeric():
         (label, length) = s.split('=')
+        hash = get_hash(label)
