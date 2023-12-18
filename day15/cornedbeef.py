@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-with open('testcase') as f:
+with open('input') as f:
     steps = [ i for i in f.readline().split(',') ]
 
 
