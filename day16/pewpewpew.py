@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from copy import deepcopy
 
 @dataclass
 class Space:
@@ -12,6 +13,11 @@ class Beam:
         self.col = [col]
         self.dir = [dir]
 
+    # def __init__(self):
+    #     self.row = []
+    #     self.col = []
+    #     self.dir = []
+
     def add_step(self, row, col, dir):
         self.row.append(row)
         self.col.append(col)
@@ -21,7 +27,7 @@ class Beam:
         return [self.row[-1], self.col[-1], self.dir[-1]]
 
     def contains(self, row, col, dir):
-        for i in len(self.row):
+        for i in range(len(self.row)):
             if self.row[i] == row and self.col[i] == col and self.dir[i] == dir:
                 return True
         return False
@@ -42,7 +48,9 @@ class Grid:
         self.layout[0][0].beams.append('R')  # this might be useful later, not sure yet
 
     def shine(self):
+        step_count = 0
         while self.beam_paths:  # not every beam will exit the grid, some will loop around forever
+            step_count += 1
             to_remove = []  # need to keep track during each tick to not change array length in mid-stream
             to_add = []  # same as above
             for i in range(len(self.beam_paths)):
@@ -51,13 +59,13 @@ class Grid:
                 # move each beam in the given direction
                 if p.dir[-1] == 'U':
                     new_row = p.row[-1] - 1
-                    if p.contains(new_row, row, dir): # if we've already been to this tile moving in this direction we're in a loop and can stop stepping through this one
+                    if p.contains(new_row, col, dir): # if we've already been to this tile moving in this direction we're in a loop and can stop stepping through this one
                         to_remove.append(i)
                         continue
                     p.add_step(new_row, col, dir)
                 elif p.dir[-1] == 'D':
                     new_row = p.row[-1] + 1
-                    if p.contains(new_row, row, dir):
+                    if p.contains(new_row, col, dir):
                         to_remove.append(i)
                         continue
                     p.add_step(new_row, col, dir)
@@ -106,21 +114,43 @@ class Grid:
                 elif self.layout[p.row[-1]][p.col[-1]].tile == '-':
                     if p.dir[-1] == 'U' or p.dir[-1] == 'D':
                         p.dir[-1] = 'R'  # change direction on one beam...
-                        to_add.append(Beam(p.row[-1], p.col[-1], 'L'))   # ... and add another beam going in the opposite direction
+                        new_beam = deepcopy(p)
+                        new_beam.dir[-1] = 'L'
+                        to_add.append(new_beam)   # ... and add another beam going in the opposite direction
                 elif self.layout[p.row[-1]][p.col[-1]].tile == '|':
                     if p.dir[-1] == 'L' or p.dir[-1] == 'R':
                         p.dir[-1] = 'U'
-                        to_add.append(Beam(p.row[-1], p.col[-1], 'D'))
+                        new_beam = deepcopy(p)
+                        new_beam.dir[-1] = 'D'
+                        to_add.append(new_beam)
                 
                 
 
             to_remove.sort()
             to_remove.reverse() # need to remove from the beam list working backwards or else everything gets fucked up
-            for i in to_remove:
-                self.beam_paths.pop(i) # pop out item i
+            for p in to_remove:
+                done = self.beam_paths.pop(p) # pop out item i
+                if done.row[-1] in (-1,10) or done.col[-1] in (-1,10):
+                    done.row.pop()
+                    done.col.pop()
+                thispath = deepcopy(my_grid.layout)
+                for i in range(len(done.row)):
+                    thispath[done.row[i]][done.col[i]].tile = '#'
+
+                for i in range(len(my_grid.layout)):
+                    row = ''
+                    for j in range(len(my_grid.layout[i])):
+                        if my_grid.layout[i][j].beam_count > 0:
+                            row += '#'
+                        else:
+                            row += my_grid.layout[i][j].tile
+                    print(row)
+                print('\n')
+                    
+
 
             self.beam_paths += to_add  # add new beams on the end
-            print(len(self.beam_paths))
+            #print(len(self.beam_paths))
 
 
 with open('testcase') as f:
@@ -137,3 +167,12 @@ for i in my_grid.layout:
             energized += 1
 
 print(energized)
+for i in range(len(my_grid.layout)):
+    row = ''
+    for j in range(len(my_grid.layout[i])):
+        if my_grid.layout[i][j].beam_count > 0:
+            row += '#'
+        else:
+            row += my_grid.layout[i][j].tile
+
+    print(row)
