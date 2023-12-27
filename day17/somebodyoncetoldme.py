@@ -35,11 +35,18 @@ class Grid:
                     min_score = best_guess[row][col]
                     current = [row,col]
             if current == end:
+                print(best_path_to_here[current[0]][current[1]])
                 return cheapest_to_here[current[0]][current[1]]
             open_set.remove(current)
             cur_row, cur_col = current
             neighbors = self.get_neighbors(cur_row, cur_col)
             for (n_row, n_col) in neighbors:
+                if len(best_path_to_here[cur_row][cur_col]) > 3:
+                      three_ago_row,three_ago_col = best_path_to_here[cur_row][cur_col][-4]
+                      if (three_ago_row == n_row and abs(three_ago_col - n_col) > 3) \
+                      or (three_ago_col == n_col and abs(three_ago_row - n_row) > 3):
+                          continue # already went 3 in this direction, so we can't go this way
+
                 tentative_score = cheapest_to_here[cur_row][cur_col] + self.layout[n_row][n_col]
                 if tentative_score < cheapest_to_here[n_row][n_col]:
                     cheapest_to_here[n_row][n_col] = tentative_score
