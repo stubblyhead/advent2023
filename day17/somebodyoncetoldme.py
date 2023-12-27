@@ -16,12 +16,15 @@ class Grid:
 
         cheapest_to_here = []
         best_guess = []
+        best_path_to_here = []
         for i in self.layout:
             l = [ inf for j in i ]
             cheapest_to_here.append(list(l))
             best_guess.append(list(l))
+            best_path_to_here.append([ [] for j in i ])
         cheapest_to_here[0][0] = 0
         best_guess[0][0] = self.heur(0,0)
+        best_path_to_here[0][0] = [[0,0]]
 
         while open_set:
             # find space on frontier with lowest known score
@@ -32,7 +35,7 @@ class Grid:
                     min_score = best_guess[row][col]
                     current = [row,col]
             if current == end:
-                return min_score
+                return cheapest_to_here[current[0]][current[1]]
             open_set.remove(current)
             cur_row, cur_col = current
             neighbors = self.get_neighbors(cur_row, cur_col)
@@ -41,6 +44,7 @@ class Grid:
                 if tentative_score < cheapest_to_here[n_row][n_col]:
                     cheapest_to_here[n_row][n_col] = tentative_score
                     best_guess[n_row][n_col] = tentative_score + self.heur(n_row, n_col)
+                    best_path_to_here[n_row][n_col] = best_path_to_here[cur_row][cur_col] + [[n_row,n_col]]
                     if [n_row, n_col] not in open_set:
                         open_set.append([n_row,n_col])
 
