@@ -76,7 +76,7 @@ def fill(grid):
 
     print(dig_count)
 
-with open('input') as f:
+with open('testcase') as f:
     lines = f.readlines()
 
 dir = []
@@ -100,3 +100,27 @@ grid = dig_borders(grid, p_row, p_col)
 
 fill(grid)
 
+for i in range(len(color)):
+    dist[i] = int(color[i][1:-1], 16)
+    if color[i][-1] == '0':
+        dir[i] = 'R'
+    elif color[i][-1] == '1':
+        dir[i] = 'D'
+    elif color[i][-1] == '2':
+        dir[i] = 'L'
+    else:
+        dir[i] = 'U'
+
+vertex_list = [(0,0)]
+for i in range(len(dir)):
+    p_row,p_col = vertex_list[-1]
+    if dir[i] == 'U':
+        vertex_list.append((p_row-1,p_col))
+    elif dir[i] == 'R':
+        vertex_list.append((p_row,p_col+1))
+    elif dir[i] == 'D':
+        vertex_list.append((p_row+1,p_col))
+    else:
+        vertex_list.append((p_row,p_col-1))
+
+print(vertex_list)
