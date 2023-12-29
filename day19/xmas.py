@@ -12,7 +12,7 @@ class Part:
 
 workflows = {}
 
-with open('testcase') as f:
+with open('input') as f:
     lines = f.read()
 
 flow_list, part_list = lines.split('\n\n')
