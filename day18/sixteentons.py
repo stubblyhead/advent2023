@@ -1,3 +1,5 @@
+import numpy as n
+
 def size_grid(dir,dist):
     # need to figure out where the starting point even is
     max_left = 0
@@ -76,7 +78,7 @@ def fill(grid):
 
     print(dig_count)
 
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
 dir = []
@@ -115,12 +117,23 @@ vertex_list = [(0,0)]
 for i in range(len(dir)):
     p_row,p_col = vertex_list[-1]
     if dir[i] == 'U':
-        vertex_list.append((p_row-1,p_col))
+        vertex_list.append((p_row-dist[i],p_col))
     elif dir[i] == 'R':
-        vertex_list.append((p_row,p_col+1))
+        vertex_list.append((p_row,p_col+dist[i]))
     elif dir[i] == 'D':
-        vertex_list.append((p_row+1,p_col))
+        vertex_list.append((p_row+dist[i],p_col))
     else:
-        vertex_list.append((p_row,p_col-1))
+        vertex_list.append((p_row,p_col-dist[i]))
 
-print(vertex_list)
+# going to try shoelace formula, i think I'll need to add the perimeter (sum of individual step counts) to get the right answer
+area = 0    
+for i in range(len(vertex_list)-1):
+    pair = n.array([vertex_list[i],vertex_list[i+1]])
+    area += (pair[0,0]*pair[1,1] - pair[0,1]*pair[1,0])
+
+area = abs(area//2)
+perimeter = 0
+for i in dist:
+    perimeter += i
+
+print(area + perimeter//2 + 1) # half the perimeter plus 1? wtf? idek.
