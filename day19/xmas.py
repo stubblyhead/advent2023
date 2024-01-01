@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from queue import SimpleQueue
 
 @dataclass
 class Part:
@@ -71,3 +72,54 @@ for i in parts:
         accepted += w
 
 print(accepted)
+
+@dataclass
+class PartRange():
+    min: int = 1
+    max: int = 4000
+
+    def __post_init__(self):
+        count = max - min + 1
+
+x = PartRange()
+m = PartRange()
+a = PartRange()
+s = PartRange()
+
+flow_queue = SimpleQueue()
+flow_queue.put(['in',x,m,a,s])
+valid = 0
+
+while not flow_queue.empty():
+    (flow,x,m,a,s) = flow_queue.get()
+    new_x = PartRange(x.min,x.max)
+    new_m = PartRange(m.min,m.max)
+    new_a = PartRange(a.min,a.max)
+    new_s = PartRange(s.min,s.max)
+    rules = workflows[flow]
+    dest_flows = []
+    
+    for r in rules:
+        if r.find(':') >= 0:
+            cmp,dest = r.split(':')
+        else:
+            dest = r
+        if cmp.find('>') > 0:
+            q,n = cmp.split('>')
+            n = int(n)
+            locals()[q] = PartRange(locals()[q].min, n)
+            locals()['new_'+q] = PartRange(n+1,locals()['new_'+q].max)
+        elif cmp.find('<') > 0:
+            q,n = cmp.split('<')
+            n = int(n)
+            locals()[q] = PartRange(locals()[q].min, n-1)
+            locals()['new_'+q] = PartRange(n,locals()['new_'+q].max)
+
+            
+        if dest == 'A':
+            True
+        elif dest != 'R':
+            flow_queue.put(dest)
+            dest_flows.append(dest)
+    if len(dest_flows) == 0:
+        print(workflows[flow])
