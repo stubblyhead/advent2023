@@ -13,7 +13,7 @@ class Part:
 
 workflows = {}
 
-with open('input') as f:
+with open('testcase') as f:
     lines = f.read()
 
 flow_list, part_list = lines.split('\n\n')
@@ -79,7 +79,24 @@ class PartRange():
     max: int = 4000
 
     def __post_init__(self):
-        count = max - min + 1
+        self.count = self.max - self.min + 1
+
+    def __eq__(self, b):
+        if self.min == b.min and self.max == b.max:
+            return True
+        else:
+            return False
+
+    # def __truediv__(self, b):
+    #     if self == b:
+    #         return self
+    #     else:
+    #         if self.min == b.min:
+    #             self.min = b.max + 1
+    #         elif self.max == b.max:
+    #             self.max = b.min - 1
+        
+    #     return PartRange(self.min, self.max)
 
 x = PartRange()
 m = PartRange()
@@ -92,34 +109,39 @@ valid = 0
 
 while not flow_queue.empty():
     (flow,x,m,a,s) = flow_queue.get()
-    new_x = PartRange(x.min,x.max)
-    new_m = PartRange(m.min,m.max)
-    new_a = PartRange(a.min,a.max)
-    new_s = PartRange(s.min,s.max)
     rules = workflows[flow]
     dest_flows = []
     
     for r in rules:
+        new_x = PartRange(x.min,x.max)
+        new_m = PartRange(m.min,m.max)
+        new_a = PartRange(a.min,a.max)
+        new_s = PartRange(s.min,s.max)
         if r.find(':') >= 0:
             cmp,dest = r.split(':')
         else:
             dest = r
+            cmp = ''
         if cmp.find('>') > 0:
             q,n = cmp.split('>')
             n = int(n)
+            locals()['new_'+q] = PartRange(n+1,locals()[q].max)
             locals()[q] = PartRange(locals()[q].min, n)
-            locals()['new_'+q] = PartRange(n+1,locals()['new_'+q].max)
+            
         elif cmp.find('<') > 0:
             q,n = cmp.split('<')
             n = int(n)
-            locals()[q] = PartRange(locals()[q].min, n-1)
-            locals()['new_'+q] = PartRange(n,locals()['new_'+q].max)
-
+            locals()['new_'+q] = PartRange(locals()[q].min, n-1)
+            locals()[q] = PartRange(n,locals()[q].max)
             
         if dest == 'A':
-            True
+            valid += (new_x.count * new_m.count * new_a.count * new_s.count)
         elif dest != 'R':
-            flow_queue.put(dest)
-            dest_flows.append(dest)
-    if len(dest_flows) == 0:
-        print(workflows[flow])
+            flow_queue.put([dest,new_x,new_m,new_a,new_s])
+            # x /= new_x
+            # m /= new_m
+            # a /= new_a
+            # s /= new_s
+
+            
+print(valid)
