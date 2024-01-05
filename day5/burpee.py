@@ -15,6 +15,12 @@ class Map:
             return src - self.src + self.dest
         else:
             return -1
+        
+    def go_back(self, dest):
+        if dest in range(self.dest, self.dest + self.rng):
+            return dest - self.dest + self.src
+        else:
+            return -1
 
 f = open('testcase')
 
@@ -156,4 +162,34 @@ for h in humid.values():
 
         loc[h] = h
 
+def find_lowest(maps, a):
+    candidates = []
+    for m in maps:
+        candidates.append(m.go_back(a))
+    if candidates.count(-1) == len(candidates):
+        return a
+    else:
+        return max(candidates)
+
 print(min(loc.values()))
+
+seed_ranges = []
+for i in range(0, len(to_plant), 2):
+    seed_ranges.append(range(to_plant[i],to_plant[i]+to_plant[i+1]-1))
+low_loc = 0
+while True:
+    low_humid = find_lowest(humid_loc, low_loc)
+    low_temp = find_lowest(temp_humid, low_humid)
+    low_light = find_lowest(light_temp, low_temp)
+    low_water = find_lowest(water_light, low_light)
+    low_fert = find_lowest(fert_water, low_water)
+    low_soil = find_lowest(soil_fert, low_fert)
+    low_seed = find_lowest(seed_soil, low_soil)
+    for r in seed_ranges:
+        if low_seed >= r.start and low_seed <= r.stop:
+            print(low_loc)
+            exit()
+    low_loc += 1
+    continue
+        
+
