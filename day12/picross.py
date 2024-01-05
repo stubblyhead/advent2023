@@ -1,4 +1,4 @@
-with open('testcase') as f:
+with open('input') as f:
     lines = [ i.strip() for i in f.readlines() ]
 
 def check_line(line, groups):
@@ -36,3 +36,14 @@ for l in lines:
     total += check_line(pattern, groups)
 
 print(total)
+big_total = 0
+for l in lines:
+    pattern, groupstr = l.split()
+    groups = list(map(int, groupstr.split(',')))
+    big_pattern, big_groups = pattern, groups
+    for i in range(4):
+        big_pattern = big_pattern + '?' + pattern
+        big_groups = big_groups + groups
+    big_total += check_line(big_pattern, big_groups)
+
+print(big_total)
