@@ -33,30 +33,36 @@ while beams:  #  will add beams as they're created, and remove them as they exit
             row -= 1
         elif dir == 'D':
             row += 1
-        if col == -1 or row -1 or col == width or row == height:
+        if col == -1 or row == -1 or col == width or row == height:
             prune.append(i)  #  beam has exited the grid
             continue
         if grid[row][col] == '\\' or grid[row][col] == '/':
             dir = reflect(grid[row][col], dir)
         if grid[row][col] == '-' and (dir == 'U' or dir == 'D'):
             dir = 'L'
-            add.append(row,col,'R')
+            add.append([(row,col,'R')])
         if grid[row][col] == '|' and (dir == 'L' or dir == 'R'):
-            dir == 'U'
-            add.append(row,col,'D')
-        if visited.index((row,col,dir)) >= 0:
+            dir = 'U'
+            add.append([(row,col,'D')])
+        if visited.count((row,col,dir)) > 0:
             prune.append(i)  # don't need to keep tracking this beam
             continue
-
+        beams[i].append((row,col,dir))
+        visited.append((row,col,dir))
         energized[row][col] = '#'  # mark this square as being energized
-        prune.sort(reverse=True)
-        for i in prune:
-            beams.pop(i)
-        beams += add
+    prune.sort(reverse=True)
+    for i in prune:
+        beams.pop(i)
+    beams += add
 
 count = 0
 for i in energized:
     count += i.count('#')
 
 print(count)
-            
+
+for i in energized:
+    tmp = ''
+    for j in i:
+        tmp += j
+    print(tmp)
