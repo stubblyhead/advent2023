@@ -1,5 +1,18 @@
+from collections import defaultdict
+
 with open('input') as f:
     lines = [ i.strip() for i in f.readlines() ]
+
+class Memoize:
+    def __init__(self, fn):
+        self.fn = fn
+        self.memo = defaultdict(str)
+    def __call__(self, *args):
+        import pickle
+        s = pickle.dumps(args)
+        if self.memo[s] == '':
+            self.memo[s] = self.fn(*args)
+        return self.memo[s]
 
 def check_line(line, groups):
     if len(line) == 0 and len(groups) == 0:
@@ -29,6 +42,8 @@ def check_line(line, groups):
             if line[groups[0]] == '.' or line[groups[0]] == '?':
                 g = groups.pop(0)  # next char after group can be a space, strip it off and rerun
                 return check_line(line[g+1:], groups)
+            
+check_line = Memoize(check_line)
 total = 0
 for l in lines:
     pattern, groupstr = l.split()
