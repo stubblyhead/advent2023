@@ -1,4 +1,4 @@
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
 g = [ list(l.strip()) for l in lines ]
