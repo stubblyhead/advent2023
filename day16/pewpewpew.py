@@ -6,7 +6,7 @@ g = [ list(l.strip()) for l in lines ]
 
 height = len(g)
 width = len(g[0])
-count = []
+count_list = []
 
 def reflect(m, d):
     if d == 'R' and m == '\\' or d == 'L' and m == '/':
@@ -91,13 +91,19 @@ def count_energized(grid,n,dir):
 
     count = 0
     for i in energized:
-        tmp = ''
         count += i.count('#')
-        for j in i:
-            tmp += j
-        print(tmp)
+        
+        
     
 
     return count
 
-print(count_energized(g, 0, 'R'))
+for i in range(len(g)):
+    count_list.append(count_energized(g,i,'R'))
+    if i == 0:
+        print(count_list[-1])
+    count_list.append(count_energized(g,i,'L'))
+for i in range(len(g[0])):
+    count_list.append(count_energized(g,i,'U'))
+    count_list.append(count_energized(g,i,'D'))
+print(max(count_list))
