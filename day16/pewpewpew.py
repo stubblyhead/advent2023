@@ -1,4 +1,4 @@
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
 grid = [ list(l.strip()) for l in lines ]
@@ -8,6 +8,8 @@ energized = [ [ '.' for i in range(width)] for j in range(height) ]
 energized[0][0] = '#'
 beams = []
 beams.append([(0,0,'R')])
+if grid[0][0] == '\\' or grid[0][0] == '|':
+    beams[0][0] = (0,0,'D')  #  we're actually going down, not right as advertised
 visited = [(0,0,'R')]  # if a beam enters a tile traveling the same direction as a previous beam then we can ignore it
 
 def reflect(m, d):
@@ -61,8 +63,8 @@ for i in energized:
 
 print(count)
 
-for i in energized:
-    tmp = ''
-    for j in i:
-        tmp += j
-    print(tmp)
+# for i in energized:
+#     tmp = ''
+#     for j in i:
+#         tmp += j
+#     print(tmp)
