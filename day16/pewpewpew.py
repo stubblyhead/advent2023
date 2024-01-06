@@ -1,16 +1,12 @@
 with open('testcase') as f:
     lines = f.readlines()
 
-grid = [ list(l.strip()) for l in lines ]
+g = [ list(l.strip()) for l in lines ]
 
 
-height = len(grid)
-width = len(grid[0])
+height = len(g)
+width = len(g[0])
 count = []
-
-# if grid[0][0] == '\\' or grid[0][0] == '|':
-#     beams[0][0] = (0,0,'D')  #  we're actually going down, not right as advertised
-# visited = [(0,0,'R')]  # if a beam enters a tile traveling the same direction as a previous beam then we can ignore it
 
 def reflect(m, d):
     if d == 'R' and m == '\\' or d == 'L' and m == '/':
@@ -34,13 +30,13 @@ def count_energized(grid,n,dir):
         col = n
     elif dir == 'R':
         row = n
-        col = width-1
+        col = 0
     elif dir == 'U':
         row = height-1
         col = n
     elif dir == 'L':
         row = n
-        col = 0
+        col = width-1
     beams = []
     if grid[row][col] == '-' and (dir == 'U' or dir == 'D'):  # first square could be a splitter
         dir = 'L'
@@ -56,6 +52,7 @@ def count_energized(grid,n,dir):
         dir = reflect(grid[row][col], dir)  # first square could be a mirror
         beams.append([(row,col,dir)])
         visited.append((row,col,dir))
+    energized[row][col] = '#'
 
     while beams:  #  will add beams as they're created, and remove them as they exit the grid or start to loop
         prune = []
@@ -94,8 +91,13 @@ def count_energized(grid,n,dir):
 
     count = 0
     for i in energized:
+        tmp = ''
         count += i.count('#')
+        for j in i:
+            tmp += j
+        print(tmp)
+    
 
     return count
 
-print(count_energized(grid, 0, 'D'))
+print(count_energized(g, 0, 'R'))
