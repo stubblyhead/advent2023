@@ -35,27 +35,78 @@ width = len(grid[0])
 
 open_set = [(0,0,0,'R',0)]
 seen = set()
-seen_count = 0
+
+# while open_set:
+#     cheapest_path,row,col,prev_dir,steps = heappop(open_set)
+#     if (row,col,prev_dir,steps) in seen:
+#         continue
+#     seen.add((row,col,prev_dir,steps))
+
+#     if (row,col) == (height-1,width-1):
+#         print(cheapest_path)
+#         break
+#     neighbors = [(row, col+1),(row, col-1),(row+1, col),(row-1, col)]
+#     for n_row,n_col in neighbors:
+#         if n_row == -1 or n_col == -1 or n_row == height or n_col == width:
+#             continue  #  outside grid
+#         direction = get_dir(row,col,n_row,n_col)
+#         if get_reverse(prev_dir) == direction:
+#             continue
+#         if steps < 3 and direction == prev_dir:
+#             heappush(open_set, (cheapest_path + grid[n_row][n_col], n_row, n_col, direction, steps+1))
+#         elif direction != prev_dir:
+#             heappush(open_set, (cheapest_path + grid[n_row][n_col], n_row, n_col, direction, 1))
+#         else:
+#             continue
+def calc_cheapest(prev_cheap, row, col, prev_dir, new_dir, grid):
+    height = len(grid)
+    width = len(grid[0])
+    if prev_dir == new_dir:
+        if row == -1 or col == -1 or row == height or col == width:
+            return -1
+        else:
+            return prev_cheap + grid[row][col]
+    if new_dir == 'U' and row < 4 or new_dir == 'D' and row > height - 5 or new_dir == 'L' and col < 4 or new_dir == 'R' and col > width - 5:
+        return -1
+    else:
+        if new_dir == 'U':
+            for i in range(row,row-4,-1):
+                prev_cheap += grid[i][col]
+        elif new_dir == 'D':
+            for i in range(row,row+4):
+                prev_cheap += grid[i][col]
+        elif new_dir == 'R':
+            for i in range(col,col+4):
+                prev_cheap += grid[row][i]
+        elif new_dir == 'L':
+            for i in range(n_col,n_col-4,-1):
+                prev_cheap += grid[n_row][i]
+        return prev_cheap
+
+
+
+
+open_set = [(0,0,0,'R',10),(0,0,0,'D',10)]
+seen = set()
 while open_set:
     cheapest_path,row,col,prev_dir,steps = heappop(open_set)
     if (row,col,prev_dir,steps) in seen:
         continue
     seen.add((row,col,prev_dir,steps))
-
     if (row,col) == (height-1,width-1):
         print(cheapest_path)
         break
     neighbors = [(row, col+1),(row, col-1),(row+1, col),(row-1, col)]
     for n_row,n_col in neighbors:
-        if n_row == -1 or n_col == -1 or n_row == height or n_col == width:
-            continue  #  outside grid
-        direction = get_dir(row,col,n_row,n_col)
-        if get_reverse(prev_dir) == direction:
+        new_dir = get_dir(row,col,n_row,n_col)
+        if new_dir == get_reverse(prev_dir):
             continue
-        if steps < 3 and direction == prev_dir:
-            heappush(open_set, (cheapest_path + grid[n_row][n_col], n_row, n_col, direction, steps+1))
-        elif direction != prev_dir:
-            heappush(open_set, (cheapest_path + grid[n_row][n_col], n_row, n_col, direction, 1))
+        new_cheap = calc_cheapest(n_row,n_col,prev_dir,new_dir,grid)
+        if new_cheap == -1:
+            continue
         else:
-            continue
-        
+            if new_dir == prev_dir: 
+                heappush(open_set,(new_cheap,n_row,n_col,new_dir,steps+1))
+            else:
+                heappush(open_set,(new_cheap,n_row,n_col,new_dir,4))
+
