@@ -23,7 +23,7 @@ def get_reverse(dir):
     elif dir == 'L':
         return 'R'
 
-with open('testcase') as f:
+with open('input') as f:
     lines = f.readlines()
 
 grid = []
@@ -36,28 +36,29 @@ width = len(grid[0])
 open_set = [(0,0,0,'R',0)]
 seen = set()
 
-# while open_set:
-#     cheapest_path,row,col,prev_dir,steps = heappop(open_set)
-#     if (row,col,prev_dir,steps) in seen:
-#         continue
-#     seen.add((row,col,prev_dir,steps))
+while open_set:
+    cheapest_path,row,col,prev_dir,steps = heappop(open_set)
+    if (row,col,prev_dir,steps) in seen:
+        continue
+    seen.add((row,col,prev_dir,steps))
 
-#     if (row,col) == (height-1,width-1):
-#         print(cheapest_path)
-#         break
-#     neighbors = [(row, col+1),(row, col-1),(row+1, col),(row-1, col)]
-#     for n_row,n_col in neighbors:
-#         if n_row == -1 or n_col == -1 or n_row == height or n_col == width:
-#             continue  #  outside grid
-#         direction = get_dir(row,col,n_row,n_col)
-#         if get_reverse(prev_dir) == direction:
-#             continue
-#         if steps < 3 and direction == prev_dir:
-#             heappush(open_set, (cheapest_path + grid[n_row][n_col], n_row, n_col, direction, steps+1))
-#         elif direction != prev_dir:
-#             heappush(open_set, (cheapest_path + grid[n_row][n_col], n_row, n_col, direction, 1))
-#         else:
-#             continue
+    if (row,col) == (height-1,width-1):
+        print(cheapest_path)
+        break
+    neighbors = [(row, col+1),(row, col-1),(row+1, col),(row-1, col)]
+    for n_row,n_col in neighbors:
+        if n_row == -1 or n_col == -1 or n_row == height or n_col == width:
+            continue  #  outside grid
+        direction = get_dir(row,col,n_row,n_col)
+        if get_reverse(prev_dir) == direction:
+            continue
+        if steps < 3 and direction == prev_dir:
+            heappush(open_set, (cheapest_path + grid[n_row][n_col], n_row, n_col, direction, steps+1))
+        elif direction != prev_dir:
+            heappush(open_set, (cheapest_path + grid[n_row][n_col], n_row, n_col, direction, 1))
+        else:
+            continue
+
 def calc_cheapest(prev_cheap, row, col, prev_dir, new_dir, grid):
     height = len(grid)
     width = len(grid[0])
