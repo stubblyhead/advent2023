@@ -23,7 +23,7 @@ def get_reverse(dir):
     elif dir == 'L':
         return 'R'
 
-with open('input') as f:
+with open('testcase') as f:
     lines = f.readlines()
 
 grid = []
@@ -64,9 +64,11 @@ def calc_cheapest(prev_cheap, row, col, prev_dir, new_dir, grid):
     if prev_dir == new_dir:
         if row == -1 or col == -1 or row == height or col == width:
             return -1
-        else:
+        elif steps < 10:
             return prev_cheap + grid[row][col]
-    if new_dir == 'U' and row < 4 or new_dir == 'D' and row > height - 5 or new_dir == 'L' and col < 4 or new_dir == 'R' and col > width - 5:
+        else:
+            return -1
+    if new_dir == 'U' and row < 3 or new_dir == 'D' and row > height - 4 or new_dir == 'L' and col < 3 or new_dir == 'R' and col > width - 4:
         return -1
     else:
         if new_dir == 'U':
@@ -92,6 +94,8 @@ while open_set:
     cheapest_path,row,col,prev_dir,steps = heappop(open_set)
     if (row,col,prev_dir,steps) in seen:
         continue
+    if row == -1 or col == -1 or row == height or col == width:
+        continue
     seen.add((row,col,prev_dir,steps))
     if (row,col) == (height-1,width-1):
         print(cheapest_path)
@@ -101,12 +105,20 @@ while open_set:
         new_dir = get_dir(row,col,n_row,n_col)
         if new_dir == get_reverse(prev_dir):
             continue
-        new_cheap = calc_cheapest(n_row,n_col,prev_dir,new_dir,grid)
+        new_cheap = calc_cheapest(cheapest_path,n_row,n_col,prev_dir,new_dir,grid)
         if new_cheap == -1:
             continue
         else:
             if new_dir == prev_dir: 
                 heappush(open_set,(new_cheap,n_row,n_col,new_dir,steps+1))
             else:
-                heappush(open_set,(new_cheap,n_row,n_col,new_dir,4))
+                if new_dir == 'D':
+                    heappush(open_set,(new_cheap,n_row+3,n_col,new_dir,4))
+                elif new_dir == 'U':
+                    heappush(open_set,(new_cheap,n_row-3,n_col,new_dir,4))
+                elif new_dir == 'R':
+                    heappush(open_set,(new_cheap,n_row,n_col+3,new_dir,4))
+                elif new_dir == 'L':
+                    heappush(open_set,(new_cheap,n_row,n_col-3,new_dir,4))
+                
 
